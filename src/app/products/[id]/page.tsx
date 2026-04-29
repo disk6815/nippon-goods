@@ -8,6 +8,10 @@ type Props = {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { id } = await params
+
+  // 数値IDのみ許可（パストラバーサル防止）
+  if (!/^\d+$/.test(id)) notFound()
+
   const detail = await fetchProductDetail(id)
   if (!detail) notFound()
 

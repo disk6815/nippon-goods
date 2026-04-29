@@ -110,8 +110,8 @@ export function ProductDetailClient({ productId, productName, thumbnailUrl, vari
                 }`}
                 style={{
                   backgroundColor: colorNameToHex(color),
-                  backgroundImage: data.previewUrl
-                    ? `url(${data.previewUrl})`
+                  backgroundImage: safePrintfulUrl(data.previewUrl)
+                    ? `url(${safePrintfulUrl(data.previewUrl)})`
                     : undefined,
                   backgroundSize: "cover",
                 }}
@@ -159,6 +159,17 @@ export function ProductDetailClient({ productId, productName, thumbnailUrl, vari
       </div>
     </div>
   )
+}
+
+// Printful CDN URLのみ許可（CSS injection防止）
+function safePrintfulUrl(url: string): string | undefined {
+  try {
+    const parsed = new URL(url)
+    if (parsed.hostname.endsWith(".printful.com") && parsed.protocol === "https:") {
+      return url
+    }
+  } catch {}
+  return undefined
 }
 
 // カラー名→簡易16進数変換（スウォッチ表示用）
